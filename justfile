@@ -2,6 +2,10 @@ base:
     foreman start -f Procfile_base
 srv:
     foreman start -f Procfile_services
+clickhouse:
+    cd ~/workspace/olap/clickhouse && sudo ./clickhouse server
+clickhouse-cli:
+    cd ~/workspace/olap/clickhouse && ./clickhouse client
 
 topics:
     kafka-topics --list --bootstrap-server localhost:9092
