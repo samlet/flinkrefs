@@ -1,0 +1,3 @@
+# hbase: /usr/local/opt/hbase/bin/hbase --config /usr/local/opt/hbase/libexec/conf master start
+kafka: kafka-server-start /usr/local/etc/kafka/server.properties
+# elasticsearch: elasticsearch
