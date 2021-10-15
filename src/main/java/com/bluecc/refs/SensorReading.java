@@ -1,4 +1,4 @@
-package com.bluecc.refs.sink;
+package com.bluecc.refs;
 
 // 传感器温度读数的数据类型
 public class SensorReading {

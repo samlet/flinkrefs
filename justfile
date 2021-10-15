@@ -16,7 +16,10 @@ consume topic:
 produce topic:
     kafka-console-producer --broker-list localhost:9092 --topic {{topic}}
 
+socket:
+    nc -lk 7777
+
 fraud:
 	mvn compile exec:java -Dexec.mainClass="com.bluecc.refs.FraudDetectionJob"
-run program:
-    mvn compile exec:java -Dexec.mainClass="com.bluecc.refs.{{program}}"
+run program +FLAGS='':
+    mvn compile exec:java -Dexec.mainClass="com.bluecc.refs.{{program}}" -Dexec.args="{{FLAGS}}"
