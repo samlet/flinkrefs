@@ -25,7 +25,7 @@ under the License.
 	<version>0.1</version>
 	<packaging>jar</packaging>
 
-	<name>Flink Walkthrough DataStream Java</name>
+	<name>Flink Walkthrough</name>
 	<url>https://flink.apache.org</url>
 
 	<properties>
