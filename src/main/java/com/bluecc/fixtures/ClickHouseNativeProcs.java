@@ -1,20 +1,37 @@
 package com.bluecc.fixtures;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.*;
 
 public class ClickHouseNativeProcs {
     public static void main(String[] args) throws SQLException {
+        initDataSource();
+
         pureTest();
-
 //        dropAndCreate();
-
         insertAndSelect();
     }
 
+    static HikariDataSource ds;
+    static void initDataSource(){
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl("jdbc:clickhouse://127.0.0.1:9000");
+        config.setDriverClassName("com.github.housepower.jdbc.ClickHouseDriver");
+        config.setUsername( "default" );
+        config.setPassword( "" );
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+
+        ds = new HikariDataSource(config);
+    }
+
     private static void insertAndSelect() throws SQLException {
-        try (Connection connection = DriverManager.getConnection("jdbc:clickhouse://127.0.0.1:9000")) {
+        try (Connection connection = getConnection()) {
             try (Statement stmt = connection.createStatement()) {
                 try (ResultSet rs = stmt.executeQuery("drop table if exists test_jdbc_example")) {
                     System.out.println(rs.next());
@@ -53,6 +70,11 @@ public class ClickHouseNativeProcs {
         }
     }
 
+    private static Connection getConnection() throws SQLException {
+//        return DriverManager.getConnection("jdbc:clickhouse://127.0.0.1:9000");
+        return ds.getConnection();
+    }
+
     private static void printCount(PreparedStatement pstmt) throws SQLException {
         System.out.println(pstmt);
         try (ResultSet rs = pstmt.executeQuery()) {
@@ -64,7 +86,7 @@ public class ClickHouseNativeProcs {
     }
 
     static void dropAndCreate() throws SQLException {
-        try (Connection connection = DriverManager.getConnection("jdbc:clickhouse://127.0.0.1:9000")) {
+        try (Connection connection = getConnection()) {
             try (Statement stmt = connection.createStatement()) {
                 stmt.executeQuery("drop table if exists test_jdbc_example");
                 stmt.executeQuery("create table test_jdbc_example(" +
@@ -80,7 +102,7 @@ public class ClickHouseNativeProcs {
     }
 
     private static void pureTest() throws SQLException {
-        try (Connection connection = DriverManager.getConnection("jdbc:clickhouse://127.0.0.1:9000")) {
+        try (Connection connection = getConnection()) {
             try (Statement stmt = connection.createStatement()) {
                 try (ResultSet rs = stmt.executeQuery(
                         "SELECT (number % 3 + 1) as n, sum(number) FROM numbers(10000000) GROUP BY n")) {

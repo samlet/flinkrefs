@@ -197,16 +197,21 @@ under the License.
 		-->
 
 		<!-- https://mvnrepository.com/artifact/ru.yandex.clickhouse/clickhouse-jdbc -->
-		<dependency>
-			<groupId>ru.yandex.clickhouse</groupId>
-			<artifactId>clickhouse-jdbc</artifactId>
-			<version>0.3.1-patch</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>ru.yandex.clickhouse</groupId>-->
+<!--			<artifactId>clickhouse-jdbc</artifactId>-->
+<!--			<version>0.3.1-patch</version>-->
+<!--		</dependency>-->
 		<!-- (推荐) shaded 版本，自 2.3-stable 起可用 -->
 		<dependency>
 			<groupId>com.github.housepower</groupId>
 			<artifactId>clickhouse-native-jdbc-shaded</artifactId>
 			<version>${clickhouse-native-jdbc.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>4.0.3</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.google.inject/guice -->
