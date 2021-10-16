@@ -36,6 +36,7 @@ under the License.
 		<maven.compiler.source>${target.java.version}</maven.compiler.source>
 		<maven.compiler.target>${target.java.version}</maven.compiler.target>
 		<log4j.version>2.14.1</log4j.version>
+		<hbase.version>2.4.5</hbase.version>
 	</properties>
 
 	<repositories>
@@ -174,6 +175,25 @@ under the License.
 			<artifactId>mybatis</artifactId>
 			<version>3.5.7</version>
 		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.apache.hbase</groupId>-->
+<!--			<artifactId>hbase-client</artifactId>-->
+<!--			<version>1.2.12</version>-->
+<!--		</dependency>-->
+		<!-- https://mvnrepository.com/artifact/org.apache.hbase/hbase-client -->
+		<!--
+		<dependency>
+			<groupId>org.apache.hbase</groupId>
+			<artifactId>hbase-client</artifactId>
+			<version>${hbase.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.hbase</groupId>
+			<artifactId>hbase</artifactId>
+			<version>${hbase.version}</version>
+			<type>pom</type>
+		</dependency>
+		-->
 
 		<!-- https://mvnrepository.com/artifact/com.google.inject/guice -->
 		<dependency>
