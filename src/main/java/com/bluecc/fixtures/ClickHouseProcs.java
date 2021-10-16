@@ -1,5 +1,11 @@
 package com.bluecc.fixtures;
 
+import com.bluecc.fixtures.mapper.StudentMapper;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +14,7 @@ import java.util.Map;
 
 /**
  * $ just clickhouse-cli
+ * or POST(plain) http://localhost:8123/
      CREATE TABLE sales
      (
      `Region` text NULL,
@@ -26,9 +33,66 @@ import java.util.Map;
      `Total Profit` FLOAT NULL
      )
      ENGINE = Log
+
+ * $ just ft ClickHouseProcs
+
+ * Others:
+     CREATE TABLE hits (
+     id Int32,
+     created_day Date,
+     type String,
+     user_id Int32,
+     location_id Int32,
+     created_at Int32
+     ) ENGINE = MergeTree PARTITION BY toMonday(created_day)
+     ORDER BY (created_at, id) SETTINGS index_granularity = 8192;
+
+     CREATE TABLE student
+     (
+     ID Int32 NOT NULL,
+     NAME text NULL,
+     BRANCH text NULL,
+     PERCENTAGE Int8 NULL,
+     PHONE Int32 NULL,
+     EMAIL text NULL
+     )
+     ENGINE = Log
+
+     CREATE TABLE test(a String, b UInt8, c FixedString(1)) ENGINE = Log
+     INSERT INTO test (a,b,c) values
+         ('user_1',1,'1')
+         ('user_2',2,'5')
+         ('user_3',3,'5')
+         ('user_1',1,'5')
+         ('user_4',4,'5')
+         ('user_5',5,'5')
+     SELECT count(*) from test
  */
-public class ClickHouseProcs {
+public class ClickHouseProcs extends SqlProcs{
+    public ClickHouseProcs(SqlSession session) {
+        super(session);
+    }
+
     public static void main(String[] args) {
+        useRawSql();
+
+        InputStream inputStream = MysqlProcs.class.getClassLoader().getResourceAsStream("mybatis-config-clickhouse.xml");
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+        sqlSessionFactory.getConfiguration().addMapper(StudentMapper.class);
+
+        // 在所有代码中都遵循这种使用模式，可以保证所有数据库资源都能被正确地关闭。
+        try (SqlSession session = sqlSessionFactory.openSession()) {
+
+            ClickHouseProcs procs=new ClickHouseProcs(session);
+//            int id=procs.insertProc();  // java.sql.SQLFeatureNotSupportedException
+//            procs.updateProc( id);
+//            procs.queryProc( id);
+            procs.listProc();
+//            procs.deleteProc( id);
+        }
+    }
+
+    static void useRawSql(){
         String sqlDB = "show databases";//查询数据库
         String sqlTab = "show tables";//查看表
         String sqlCount = "select count(*) count from sales";//查询sales数据量

@@ -27,3 +27,5 @@ fraud:
 	mvn compile exec:java -Dexec.mainClass="com.bluecc.refs.FraudDetectionJob"
 run program +FLAGS='':
     mvn compile exec:java -Dexec.mainClass="com.bluecc.refs.{{program}}" -Dexec.args="{{FLAGS}}"
+ft program +FLAGS='':
+    mvn compile exec:java -Dexec.mainClass="com.bluecc.fixtures.{{program}}" -Dexec.args="{{FLAGS}}"

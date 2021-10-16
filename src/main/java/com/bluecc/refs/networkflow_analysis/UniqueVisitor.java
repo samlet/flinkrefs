@@ -26,7 +26,7 @@ public class UniqueVisitor {
         // 1. 创建执行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
-        env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
+//        env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
 
         // 2. 读取数据，创建DataStream
         URL resource = UniqueVisitor.class.getResource("/UserBehavior.csv");
