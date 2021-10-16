@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.github.housepower.jdbc.ClickHouseDriver"/>
+                <property name="url" value="jdbc:clickhouse://127.0.0.1:9000"/>
+<!--                <property name="username" value="default"/>-->
+<!--                <property name="password" value="default"/>-->
+                <property name="poolPingQuery" value="SELECT NOW()" />
+                <property name="poolPingEnabled" value="true" />
+            </dataSource>
+        </environment>
+    </environments>
+<!--    <mappers>-->
+<!--        <mapper resource="org/mybatis/example/BlogMapper.xml"/>-->
+<!--    </mappers>-->
+</configuration>

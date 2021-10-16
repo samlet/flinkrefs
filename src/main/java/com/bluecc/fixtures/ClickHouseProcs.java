@@ -74,9 +74,11 @@ public class ClickHouseProcs extends SqlProcs{
     }
 
     public static void main(String[] args) {
-        useRawSql();
+//        useRawSql();
 
-        InputStream inputStream = MysqlProcs.class.getClassLoader().getResourceAsStream("mybatis-config-clickhouse.xml");
+        InputStream inputStream = MysqlProcs.class.getClassLoader()
+                .getResourceAsStream("mybatis-config-clickhouse.xml");
+//                .getResourceAsStream("mybatis-config-clickhouse-native.xml");
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         sqlSessionFactory.getConfiguration().addMapper(StudentMapper.class);
 
