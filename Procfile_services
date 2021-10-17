@@ -2,3 +2,4 @@
 kafka: kafka-server-start /usr/local/etc/kafka/server.properties
 elasticsearch: elasticsearch
 clickhouse: just clickhouse
+maxwell: maxwell --user='maxwell' --password='XXXXXX' --host='127.0.0.1' --producer=kafka --kafka.bootstrap.servers=localhost:9092 --kafka_topic=maxwell

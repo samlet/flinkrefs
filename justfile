@@ -2,10 +2,16 @@ base:
     foreman start -f Procfile_base
 srv:
     foreman start -f Procfile_services
+tool:
+    foreman start -f Procfile_tool
 clickhouse:
     cd ~/workspace/olap/clickhouse && sudo ./clickhouse server
 clickhouse-cli:
     cd ~/workspace/olap/clickhouse && ./clickhouse client
+maxwell:
+	maxwell --user='maxwell' --password='XXXXXX' --host='127.0.0.1' --producer=stdout
+maxwell-kafka:
+    maxwell --user='maxwell' --password='XXXXXX' --host='127.0.0.1' --producer=kafka --kafka.bootstrap.servers=localhost:9092 --kafka_topic=maxwell
 
 topics:
     kafka-topics --list --bootstrap-server localhost:9092
