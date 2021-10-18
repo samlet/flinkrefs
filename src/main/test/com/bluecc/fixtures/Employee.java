@@ -79,7 +79,9 @@ public class Employee {
 
     @Override
     public String toString() {
-        return String.format("Employee [empNo=%d, ename=%s, job=%s, mgr=%d, hiredate=%s, sal=%d, comm=%d, deptno=%d]", empNo, ename, job, mgr, hiredate, sal, comm, deptno);
+        return String.format("Employee [empNo=%d, ename=%s, job=%s, mgr=%d, " +
+                        "hiredate=%s, sal=%d, comm=%d, deptno=%d]",
+                empNo, ename, job, mgr, hiredate, sal, comm, deptno);
     }
 
 }

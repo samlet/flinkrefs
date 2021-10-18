@@ -7,13 +7,15 @@ tool:
 clickhouse:
     cd ~/workspace/olap/clickhouse && sudo ./clickhouse server
 clickhouse-cli:
-    cd ~/workspace/olap/clickhouse && ./clickhouse client
+    cd ~/workspace/olap/clickhouse && ./clickhouse client -m
 maxwell:
 	maxwell --user='maxwell' --password='XXXXXX' --host='127.0.0.1' --producer=stdout
 maxwell-kafka:
     maxwell --user='maxwell' --password='XXXXXX' --host='127.0.0.1' --producer=kafka --kafka.bootstrap.servers=localhost:9092 --kafka_topic=maxwell
 cassandra:
     cassandra -f
+kafka:
+    kafka-server-start /usr/local/etc/kafka/server.properties
 
 topics:
     kafka-topics --list --bootstrap-server localhost:9092
@@ -37,3 +39,7 @@ run program +FLAGS='':
     mvn compile exec:java -Dexec.mainClass="com.bluecc.refs.{{program}}" -Dexec.args="{{FLAGS}}"
 ft program +FLAGS='':
     mvn compile exec:java -Dexec.mainClass="com.bluecc.fixtures.{{program}}" -Dexec.args="{{FLAGS}}"
+
+mysqlsh:
+	mysqlsh mysql://root:root@localhost:3306
+
