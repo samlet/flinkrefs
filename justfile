@@ -12,6 +12,8 @@ maxwell:
 	maxwell --user='maxwell' --password='XXXXXX' --host='127.0.0.1' --producer=stdout
 maxwell-kafka:
     maxwell --user='maxwell' --password='XXXXXX' --host='127.0.0.1' --producer=kafka --kafka.bootstrap.servers=localhost:9092 --kafka_topic=maxwell
+cassandra:
+    cassandra -f
 
 topics:
     kafka-topics --list --bootstrap-server localhost:9092

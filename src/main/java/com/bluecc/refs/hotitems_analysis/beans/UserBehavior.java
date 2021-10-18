@@ -1,5 +1,21 @@
 package com.bluecc.refs.hotitems_analysis.beans;
 
+/**
+ * 列名称 说明
+ * ----------------
+ * 用户ID    整数类型，序列化后的用户ID
+ * 商品ID    整数类型，序列化后的商品ID
+ * 商品类目ID  整数类型，序列化后的商品所属类目ID
+ * 行为类型    字符串，枚举类型，包括('pv', 'buy', 'cart', 'fav')
+ * 时间戳 行为发生的时间戳
+ *
+ * 行为类型    说明
+ * ----------------
+ * pv  商品详情页pv，等价于点击
+ * buy 商品购买
+ * cart    将商品加入购物车
+ * fav 收藏商品
+ */
 public class UserBehavior {
     // 定义私有属性
     private Long userId;
