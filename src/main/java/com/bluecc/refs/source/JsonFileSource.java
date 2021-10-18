@@ -30,7 +30,7 @@ public class JsonFileSource {
                     return gson.fromJson(line, Hotel.class);
                 });
 
-        dataStream.print();
+        dataStream.print("hotel");
         env.execute();
     }
 }
