@@ -40,4 +40,10 @@ public class JsonFormatTest {
         private Integer employeeId;
         private String address;
     }
+
+//    @Test
+//    public void testSetDateFormatWithSimpleDateFormat(){
+//        Gson gson=new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+//                .create();
+//    }
 }

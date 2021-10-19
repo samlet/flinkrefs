@@ -1,0 +1,77 @@
+version: "1"
+
+tables:
+    employee:
+        create: |
+            CREATE TABLE employee_information (
+                emp_id INT,
+                name VARCHAR,
+                dept_id INT
+            ) WITH (
+                'connector' = 'filesystem',
+                'path' = 'something.csv',
+                'format' = 'csv'
+            );
+
+        query:
+            find_by_dept:
+                vars: [dept_id]
+                sql: |
+                    SELECT * from employee_information WHERE DeptId = {{dept_id}};
+            emp_count:
+                sql: |
+                    SELECT
+                       dept_id,
+                       COUNT(*) as emp_count
+                    FROM employee_information
+                    GROUP BY dep_id;
+
+        sink:
+            sink_count:
+                vars: [target]
+                sql: |
+                    INSERT INTO {{target}}
+                    SELECT
+                       dept_id,
+                       COUNT(*) as emp_count
+                    FROM employee_information;
+
+    order:
+        query:
+            all_price:
+                sql: |
+                    SELECT order_id, price + tax FROM Orders
+            price_by_id:
+                vars: [id]
+                sql: |
+                    SELECT price + tax FROM Orders WHERE id = {{id}}
+            orders_with_total:
+                sql: |
+                    WITH orders_with_total AS (
+                        SELECT order_id, price + tax AS total
+                        FROM Orders
+                    )
+                    SELECT order_id, SUM(total)
+                    FROM orders_with_total
+                    GROUP BY order_id;
+
+    # https://ci.apache.org/projects/flink/flink-docs-release-1.13/zh/docs/dev/table/sql/queries/window-tvf/
+    bid:
+        query:
+            bidtime_window:
+                vars: [minutes]
+                sql: |
+                    SELECT * FROM TABLE(
+                       TUMBLE(
+                         DATA => TABLE Bid,
+                         TIMECOL => DESCRIPTOR(bidtime),
+                         SIZE => INTERVAL '{{minutes}}' MINUTES));
+            # apply aggregation on the tumbling windowed table
+            price_agg:
+                vars: [minutes]
+                sql: |
+                    SELECT window_start, window_end, SUM(price)
+                      FROM TABLE(
+                        TUMBLE(TABLE Bid, DESCRIPTOR(bidtime), INTERVAL '{{minutes}}' MINUTES))
+                      GROUP BY window_start, window_end;
+

@@ -1,0 +1,16 @@
+version: "1"
+
+tables:
+    users:
+        create: |
+            CREATE TABLE myUserTable (
+              user_id STRING,
+              user_name STRING
+              uv BIGINT,
+              pv BIGINT,
+              PRIMARY KEY (user_id) NOT ENFORCED
+            ) WITH (
+              'connector' = 'elasticsearch-7',
+              'hosts' = 'http://localhost:9200',
+              'index' = 'users'
+            );

@@ -1,0 +1,43 @@
+version: "1"
+
+tables:
+    pageviews_per_region:
+        create: |
+            CREATE TABLE pageviews_per_region (
+              user_region STRING,
+              pv BIGINT,
+              uv BIGINT,
+              PRIMARY KEY (user_region) NOT ENFORCED
+            ) WITH (
+              'connector' = 'upsert-kafka',
+              'topic' = 'pageviews_per_region',
+              'properties.bootstrap.servers' = '...',
+              'key.format' = 'avro',
+              'value.format' = 'avro'
+            );
+        sink:
+            # 计算 pv、uv 并插入到 upsert-kafka sink
+            upsert_kafka:
+                sql: |
+                    INSERT INTO pageviews_per_region
+                    SELECT
+                      user_region,
+                      COUNT(*),
+                      COUNT(DISTINCT user_id)
+                    FROM pageviews
+                    GROUP BY user_region;
+
+    pageviews:
+        create: |
+            CREATE TABLE pageviews (
+              user_id BIGINT,
+              page_id BIGINT,
+              viewtime TIMESTAMP,
+              user_region STRING,
+              WATERMARK FOR viewtime AS viewtime - INTERVAL '2' SECOND
+            ) WITH (
+              'connector' = 'kafka',
+              'topic' = 'pageviews',
+              'properties.bootstrap.servers' = '...',
+              'format' = 'json'
+            );

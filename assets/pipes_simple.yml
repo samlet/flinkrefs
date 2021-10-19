@@ -1,0 +1,15 @@
+version: "1"
+
+pipes:
+    streaming_insert:
+        vars: [target]
+        sql: |
+            INSERT INTO {{target}}
+            SELECT
+                user_id,
+                order_amount,
+                DATE_FORMAT(ts_ltz, 'yyyy-MM-dd'),
+                DATE_FORMAT(ts_ltz, 'HH')
+            FROM kafka_table;
+    query_by_dt:
+        sql: SELECT * FROM fs_table WHERE dt='2020-05-20' and `hour`='12';

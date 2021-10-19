@@ -16,6 +16,16 @@ cassandra:
     cassandra -f
 kafka:
     kafka-server-start /usr/local/etc/kafka/server.properties
+flink:
+    ~/workspace/flink/flink-1.13.2/bin/start-cluster.sh
+stop-flink:
+    ~/workspace/flink/flink-1.13.2/bin/stop-cluster.sh
+sql-client:
+    ~/workspace/flink/flink-1.13.2/bin/sql-client.sh
+restart-flink:
+    ~/workspace/flink/flink-1.13.2/bin/stop-cluster.sh
+    ~/workspace/flink/flink-1.13.2/bin/start-cluster.sh
+    ~/workspace/flink/flink-1.13.2/bin/sql-client.sh
 
 topics:
     kafka-topics --list --bootstrap-server localhost:9092

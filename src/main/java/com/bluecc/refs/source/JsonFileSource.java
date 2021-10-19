@@ -17,6 +17,8 @@ public class JsonFileSource {
         private String name;
     }
 
+    static final Gson gson = new GsonBuilder().setFieldNamingPolicy(LOWER_CASE_WITH_UNDERSCORES)
+            .create();
     public static void main(String[] args) throws Exception {
 
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -24,11 +26,7 @@ public class JsonFileSource {
 
         DataStream<String> inputStream = env.readTextFile("../bluesrv/maintain/dump/hotel.jsonl");
         DataStream<Hotel> dataStream = inputStream
-                .map(line -> {
-                    Gson gson = new GsonBuilder().setFieldNamingPolicy(LOWER_CASE_WITH_UNDERSCORES)
-                            .create();
-                    return gson.fromJson(line, Hotel.class);
-                });
+                .map(line -> gson.fromJson(line, Hotel.class));
 
         dataStream.print("hotel");
         env.execute();

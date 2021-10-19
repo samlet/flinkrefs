@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.bluecc.refs.source.Helper.GSON;
 import static com.google.gson.FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES;
 
 public class OrderInfoSource {
@@ -136,9 +137,8 @@ public class OrderInfoSource {
         DataStream<String> inputStream = env.readTextFile("../bluesrv/maintain/dump/order_info.jsonl");
         DataStream<OrderInfo> dataStream = inputStream
                 .map(line -> {
-                    Gson gson = new GsonBuilder().setFieldNamingPolicy(LOWER_CASE_WITH_UNDERSCORES)
-                            .create();
-                    OrderInfo orderInfo = gson.fromJson(line, OrderInfo.class);
+
+                    OrderInfo orderInfo = GSON.fromJson(line, OrderInfo.class);
                     // Long ts = DateTimeUtil.toTs(orderInfo.getCreateTime());
                     DateTime dt = new DateTime(orderInfo.getCreateTime());
                     orderInfo.setTs(dt.getMillis());
@@ -147,31 +147,23 @@ public class OrderInfoSource {
                 .assignTimestampsAndWatermarks(
                         WatermarkStrategy.<OrderInfo>forMonotonousTimestamps()
                                 .withTimestampAssigner(
-                                        new SerializableTimestampAssigner<OrderInfo>() {
-                                            @Override
-                                            public long extractTimestamp(OrderInfo stats, long recordTimestamp) {
-                                                return stats.getTs();
-                                            }
-                                        }
+                                        (SerializableTimestampAssigner<OrderInfo>) (stats, recordTimestamp) -> stats.getTs()
                                 )
                 );
 
-        SingleOutputStreamOperator<UserAmount> reduceDS =dataStream.keyBy(stats -> stats.getUserId())
+        SingleOutputStreamOperator<UserAmount> reduceDS = dataStream.keyBy(stats -> stats.getUserId())
                 // .window(TumblingEventTimeWindows.of(Time.seconds(10)))
                 .window(TumblingEventTimeWindows.of(Time.minutes(10)))
-                .reduce(new ReduceFunction<OrderInfo>() {
-                            @Override
-                            public OrderInfo reduce(OrderInfo value1, OrderInfo value2) throws Exception {
-                                value1.setTotalAmount(value1.totalAmount.add(value2.totalAmount));
-                                return value1;
-                            }
-                        }, new ProcessWindowFunction<OrderInfo, UserAmount, Long, TimeWindow>() {
+                .reduce((ReduceFunction<OrderInfo>) (value1, value2) -> {
+                    value1.setTotalAmount(value1.totalAmount.add(value2.totalAmount));
+                    return value1;
+                }, new ProcessWindowFunction<OrderInfo, UserAmount, Long, TimeWindow>() {
 
                             @Override
-                            public void process(Long aLong, ProcessWindowFunction<OrderInfo, UserAmount, Long, TimeWindow>.Context context, Iterable<OrderInfo> elements, Collector<UserAmount> out) throws Exception {
+                            public void process(Long aLong, ProcessWindowFunction<OrderInfo, UserAmount, Long, TimeWindow>.Context context, Iterable<OrderInfo> elements, Collector<UserAmount> out) {
                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                 for (OrderInfo stat : elements) {
-                                    UserAmount result=new UserAmount();
+                                    UserAmount result = new UserAmount();
                                     result.setUserId(stat.getUserId());
                                     result.setTotalAmount(stat.getTotalAmount());
                                     result.setStart(simpleDateFormat.format(new Date(context.window().getStart())));
@@ -187,3 +179,4 @@ public class OrderInfoSource {
         env.execute();
     }
 }
+
