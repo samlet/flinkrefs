@@ -72,3 +72,41 @@ tables:
              'properties.group.id' = 'testGroup',
              'format' = 'maxwell-json'
             )
+
+    user_page_input:
+        create: |
+            CREATE TABLE input_kafka (
+              user_id BIGINT,
+              page_id BIGINT,
+              status STRING
+            ) WITH (
+              'connector' = 'kafka',
+              'topic' = 'input_kafka',
+              'properties.bootstrap.servers' = 'localhost:9092',
+              'properties.group.id' = 'default',
+              'scan.startup.mode' = 'latest-offset',
+              'format' = 'csv'
+            )
+
+    user_page_output:
+        create: |
+            CREATE TABLE output_kafka (
+              user_id BIGINT,
+              page_id BIGINT,
+              status STRING
+            ) WITH (
+              'connector' = 'kafka',
+              'topic' = 'output_kafka',
+              'properties.bootstrap.servers' = 'localhost:9092',
+              'format' = 'json',
+              'sink.partitioner' = 'round-robin'
+            )
+
+pipes:
+    pick_success:
+        sql: |
+            insert into output_kafka
+                select user_id, page_id, status
+                    from input_kafka
+                    where status = 'success'
+
