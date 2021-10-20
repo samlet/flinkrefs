@@ -96,6 +96,7 @@ public class StreamSQLExample {
                                 + "SELECT * FROM OrderB WHERE amount < 2");
 
         tEnv.toAppendStream(result, Order.class).print();
+        // result.execute().print();  // print with table format
 
         // after the table program is converted to DataStream program,
         // we must use `env.execute()` to submit the job.

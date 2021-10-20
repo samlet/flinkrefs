@@ -102,6 +102,39 @@ tables:
               'sink.partitioner' = 'round-robin'
             )
 
+    # $ just run generator.UserGeneratorJob -sleep 500   # 0.5s
+    # Flink SQL> select * from user_info_kafka;
+    user_info_input:
+        create: |
+            CREATE TABLE {{name}} (
+              id BIGINT,
+              login_name STRING,
+              user_level STRING,
+              email STRING
+            ) WITH (
+              'connector' = 'kafka',
+              'topic' = 'objects',
+              'properties.bootstrap.servers' = 'localhost:9092',
+              'properties.group.id' = 'default',
+              'scan.startup.mode' = 'latest-offset',
+              'format' = 'json'
+            )
+
+    user_info_output:
+        create: |
+            CREATE TABLE {{name}} (
+              id BIGINT,
+              login_name STRING,
+              user_level STRING,
+              email STRING
+            ) WITH (
+              'connector' = 'kafka',
+              'topic' = 'output_kafka',
+              'properties.bootstrap.servers' = 'localhost:9092',
+              'format' = 'json',
+              'sink.partitioner' = 'round-robin'
+            )
+
 pipes:
     pick_success:
         sql: |

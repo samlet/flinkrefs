@@ -55,5 +55,14 @@ public class PrefabsTest {
         System.out.println(tablesElement.getTables().keySet());
         assertFalse(tablesElement.getTables().isEmpty());
     }
+
+    @Test
+    public void testGetSql() throws FileNotFoundException {
+        Prefabs.TablesElement tablesElement=new Prefabs().load("assets/source_kafka.yml");
+        System.out.println(tablesElement.getTables().keySet());
+        assertFalse(tablesElement.getTables().isEmpty());
+        String sql=tablesElement.getTables().get("user_info_input").create;
+        System.out.println(sql);
+    }
 }
 
