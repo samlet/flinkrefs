@@ -18,6 +18,7 @@ public class Prefabs {
         List<String> vars=new ArrayList<>();
         String sql;
     }
+
     @Data
     public static class TableElement{
         String create;
@@ -29,6 +30,7 @@ public class Prefabs {
     public static class PipeElement{
         String sql;
     }
+
     @Data
     public static class TablesElement{
         String version;

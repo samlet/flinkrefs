@@ -16,40 +16,49 @@
  * limitations under the License.
  */
 
-package com.bluecc.refs.statemachine;
+package com.bluecc.refs.generator;
 
+import com.bluecc.refs.statemachine.StateMachineExample;
+import com.bluecc.refs.statemachine.generator.EventsGeneratorSource;
+import com.bluecc.refs.statemachine.kafka.EventDeSerializer;
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
-import com.bluecc.refs.statemachine.generator.EventsGeneratorSource;
-import com.bluecc.refs.statemachine.kafka.EventDeSerializer;
+
+import java.util.Date;
 
 /**
- * Job to generate input events that are written to Kafka, for the {@link StateMachineExample} job.
+ * Job to generate user-info.
+ *
+ * $ just consume objects
+ * $ just run generator.UserGeneratorJob -sleep 500   # 0.5s
  */
-public class KafkaEventsGeneratorJob {
+public class UserGeneratorJob {
 
     public static void main(String[] args) throws Exception {
 
         final ParameterTool params = ParameterTool.fromArgs(args);
 
-        double errorRate = params.getDouble("error-rate", 0.0);
-        int sleep = params.getInt("sleep", 1);
+//        double errorRate = params.getDouble("error-rate", 0.0);
+        int sleep = params.getInt("sleep", 1000);  // sleep 1 second
 
-        String kafkaTopic = params.get("kafka-topic", "stats");
+        String kafkaTopic = params.get("kafka-topic", "objects");
         String brokers = params.get("brokers", "localhost:9092");
 
         System.out.printf(
-                "Generating events to Kafka with standalone source with error rate %f and sleep delay %s millis\n",
-                errorRate, sleep);
+                "Generating events to Kafka with standalone source with sleep delay %s millis\n",
+                sleep);
         System.out.println();
 
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-        env.addSource(new EventsGeneratorSource(errorRate, sleep))
-                .addSink(new FlinkKafkaProducer<>(brokers, kafkaTopic, new EventDeSerializer()));
+        final UserInfoGen gen=new UserInfoGen("50", new Date(), true);
+        env.addSource(new InfoGeneratorSource<UserInfo>(gen, sleep))
+                .returns(UserInfo.class)  // http://www.lzhpo.com/article/137
+                .addSink(new FlinkKafkaProducer<>(brokers, kafkaTopic,
+                        new ObjectDeSerializer<>(UserInfo.class)));
 
         // trigger program execution
-        env.execute("State machine example Kafka events generator job");
+        env.execute("user-info events generator job");
     }
 }
