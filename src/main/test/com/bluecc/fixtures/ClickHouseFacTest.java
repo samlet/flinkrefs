@@ -61,7 +61,9 @@ public class ClickHouseFacTest {
     public static List<Employee> fetchData(ClickHouseFac fac) {
         final String SQL_QUERY = "select * from emp";
         List<Employee> employees = null;
-        try (Connection con = fac.getConnection(); PreparedStatement pst = con.prepareStatement(SQL_QUERY); ResultSet rs = pst.executeQuery();) {
+        try (Connection con = fac.getConnection();
+             PreparedStatement pst = con.prepareStatement(SQL_QUERY);
+             ResultSet rs = pst.executeQuery();) {
             employees = new ArrayList<Employee>();
             Employee employee;
             while (rs.next()) {

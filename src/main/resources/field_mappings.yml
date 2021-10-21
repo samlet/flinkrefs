@@ -1,0 +1,7 @@
+mappings:
+    float:
+        clickhouse: Float32
+    double:
+        clickhouse: Float64
+
+

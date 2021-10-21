@@ -1,5 +1,5 @@
 package com.bluecc.refs.sink;
-import com.bluecc.refs.SensorReading;
+import com.bluecc.refs.sensor.SensorReading;
 import org.apache.flink.api.common.functions.RuntimeContext;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;

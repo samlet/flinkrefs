@@ -59,7 +59,7 @@ tables:
 
     products_maxwell:
         create: |
-            CREATE TABLE topic_products (
+            CREATE TABLE {{name}} (
               -- schema is totally the same to the MySQL "products" table
               id BIGINT,
               name STRING,

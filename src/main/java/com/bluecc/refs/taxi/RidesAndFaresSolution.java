@@ -25,7 +25,6 @@ import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.environment.CheckpointConfig;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.RichCoFlatMapFunction;
 import com.bluecc.refs.taxi.datatypes.TaxiFare;
@@ -33,7 +32,7 @@ import com.bluecc.refs.taxi.sources.TaxiFareGenerator;
 import com.bluecc.refs.taxi.utils.ExerciseBase;
 import org.apache.flink.util.Collector;
 
-import static com.bluecc.refs.EnvUtils.getStreamExecutionEnvironment;
+import static com.bluecc.util.EnvUtils.getStreamExecutionEnvironment;
 
 /**
  * Java reference implementation for the "Stateful Enrichment" exercise of the Flink training in the docs.

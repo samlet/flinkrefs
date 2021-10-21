@@ -1,7 +1,5 @@
 package com.bluecc.refs.sensor;
 
-import com.bluecc.refs.SensorReading;
-import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;

@@ -11,8 +11,6 @@ import javax.inject.Singleton;
 import java.io.FileNotFoundException;
 import java.util.Map;
 
-import static org.junit.Assert.assertFalse;
-
 @Singleton
 public class PrefabManager {
     private static final Logger logger = LoggerFactory.getLogger(PrefabManager.class);
@@ -32,7 +30,7 @@ public class PrefabManager {
      * @return
      * @throws FileNotFoundException
      */
-    public TableResult execute(StreamTableEnvironment tEnv, String asset, String descriptor) throws FileNotFoundException {
+    public TableResult define(StreamTableEnvironment tEnv, String asset, String descriptor) throws FileNotFoundException {
 
         Prefabs.TablesElement tablesElement=prefabs.get(asset);
         if(tablesElement==null) {

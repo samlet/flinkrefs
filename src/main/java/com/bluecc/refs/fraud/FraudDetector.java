@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.bluecc.refs;
+package com.bluecc.refs.fraud;
 
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction;
 import org.apache.flink.util.Collector;

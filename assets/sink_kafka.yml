@@ -1,6 +1,20 @@
 version: "1"
 
 tables:
+    addresses_output:
+        create: |
+            CREATE TABLE {{name}} (
+                id INT,
+                user_id INT,
+                email_address STRING
+            ) WITH (
+                'connector' = 'kafka',
+                'topic' = 'output_kafka',
+                'properties.bootstrap.servers' = 'localhost:9092',
+                'format' = 'json',
+                'sink.partitioner' = 'round-robin'
+            )
+
     pageviews_per_region:
         create: |
             CREATE TABLE pageviews_per_region (
@@ -11,7 +25,7 @@ tables:
             ) WITH (
               'connector' = 'upsert-kafka',
               'topic' = 'pageviews_per_region',
-              'properties.bootstrap.servers' = '...',
+              'properties.bootstrap.servers' = 'localhost:9092',
               'key.format' = 'avro',
               'value.format' = 'avro'
             );
@@ -38,6 +52,6 @@ tables:
             ) WITH (
               'connector' = 'kafka',
               'topic' = 'pageviews',
-              'properties.bootstrap.servers' = '...',
+              'properties.bootstrap.servers' = 'localhost:9092',
               'format' = 'json'
             );

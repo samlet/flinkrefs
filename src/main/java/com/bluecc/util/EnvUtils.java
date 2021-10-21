@@ -1,4 +1,4 @@
-package com.bluecc.refs;
+package com.bluecc.util;
 
 import com.bluecc.refs.taxi.utils.ExerciseBase;
 import org.apache.flink.configuration.Configuration;

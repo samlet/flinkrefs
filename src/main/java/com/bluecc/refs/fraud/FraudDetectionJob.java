@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.bluecc.refs;
+package com.bluecc.refs.fraud;
 
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
