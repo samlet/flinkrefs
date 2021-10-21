@@ -14,7 +14,7 @@ public class ClickHouseFac {
 
     ClickHouseFac() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:clickhouse://127.0.0.1:9000");
+        config.setJdbcUrl("jdbc:clickhouse://127.0.0.1:9000/default");
         config.setDriverClassName("com.github.housepower.jdbc.ClickHouseDriver");
         config.setUsername("default");
         config.setPassword("");

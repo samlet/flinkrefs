@@ -125,7 +125,7 @@ public class ClickHouseFacTest {
                     = "INSERT INTO email (id, employee_id, address) "
                     + "VALUES (?, ?, ?)";
 
-            Object[] values=new Object[]{1, 1, "beijing"};
+            Object[] values={1, 1, "beijing"};
             int numRowsInserted = runner.update(connection, insertSQL, values);
 
             assertEquals(numRowsInserted, 1);
