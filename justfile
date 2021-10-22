@@ -16,6 +16,11 @@ cassandra:
     cassandra -f
 kafka:
     kafka-server-start /usr/local/etc/kafka/server.properties
+es:
+    elasticsearch
+kibana:
+    kibana
+
 flink:
     ~/workspace/flink/flink-1.13.2/bin/start-cluster.sh
 stop-flink:
@@ -39,6 +44,12 @@ consume topic:
     kafka-console-consumer --bootstrap-server localhost:9092 --topic {{topic}}
 produce topic:
     kafka-console-producer --broker-list localhost:9092 --topic {{topic}}
+
+# pref delete.topic.enable=true
+delete topic:
+    kafka-topics --zookeeper localhost:2181 \
+                    --topic {{topic}} \
+                    --delete
 
 socket:
     nc -lk 7777

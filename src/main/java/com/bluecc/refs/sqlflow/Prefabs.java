@@ -29,6 +29,7 @@ public class Prefabs {
     @Data
     public static class PipeElement{
         String sql;
+        List<String> vars=new ArrayList<>();
     }
 
     @Data

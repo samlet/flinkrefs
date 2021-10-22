@@ -46,4 +46,15 @@ public class PrefabManager {
 
         return tEnv.executeSql(renderedSql);
     }
+
+    public TableResult[] defineTables(StreamTableEnvironment tEnv, String asset,
+                                    String... descriptors) throws FileNotFoundException {
+        TableResult[] results=new TableResult[descriptors.length];
+        for (int i=0;i<descriptors.length; ++i) {
+            results[i]=define(tEnv, asset, descriptors[i]);
+        }
+        return results;
+    }
+
 }
+
