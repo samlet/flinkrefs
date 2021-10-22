@@ -1,0 +1,71 @@
+version: "1"
+
+tables:
+    orders:
+        create: |
+            CREATE TABLE orders (
+                order_uid  BIGINT,
+                product_id BIGINT,
+                price      DECIMAL(32, 2),
+                order_time TIMESTAMP(3)
+            ) WITH (
+                'connector' = 'datagen'
+            );
+
+    # https://github.com/knaufk/flink-faker
+    location_updates:
+        create: |
+            CREATE TEMPORARY TABLE location_updates (
+              `character_id` INT,
+              `location` STRING,
+              `proctime` AS PROCTIME()
+            )
+            WITH (
+              'connector' = 'faker',
+              'fields.character_id.expression' = '#{number.numberBetween ''0'',''100''}',
+              'fields.location.expression' = '#{harry_potter.location}'
+            );
+
+    characters:
+        create: |
+            CREATE TEMPORARY TABLE characters (
+              `character_id` INT,
+              `name` STRING
+            )
+            WITH (
+              'connector' = 'faker',
+              'fields.character_id.expression' = '#{number.numberBetween ''0'',''100''}',
+              'fields.name.expression' = '#{harry_potter.characters}'
+            );
+
+    timestamp_example:
+        create: |
+            CREATE TEMPORARY TABLE timestamp_example (
+              `timestamp1` TIMESTAMP(3),
+              `timestamp2` TIMESTAMP(3)
+            )
+            WITH (
+              'connector' = 'faker',
+              'fields.timestamp1.expression' = '#{date.past ''15'',''SECONDS''}',
+              'fields.timestamp2.expression' = '#{date.past ''15'',''5'',''SECONDS''}'
+            );
+
+
+pipes:
+    location_updates_and_characters:
+        sql: |
+            SELECT
+              c.character_id,
+              l.location,
+              c.name
+            FROM location_updates AS l
+            JOIN characters FOR SYSTEM_TIME AS OF proctime AS c
+            ON l.character_id = c.character_id;
+
+apps:
+    timestamp_example:
+        components: [t.timestamp_example, p.location_updates_and_characters]
+        script: |
+            app.create("timestamp_example")
+            ds=app.query("location_updates_and_characters")
+            ds.print()
