@@ -85,7 +85,7 @@ tables:
                 'connector' = 'elasticsearch-7',
                 'hosts' = 'http://localhost:9200',
                 'index' = 'top_category'
-            );
+            )
 
     # 通过维表关联，补全类目名称。我们仍然使用 CREATE VIEW 将该查询注册成一个视图，简化逻辑。
     # 维表关联使用 temporal join 语法，可以查看文档了解更多：
@@ -95,7 +95,7 @@ tables:
             CREATE VIEW rich_user_behavior AS
             SELECT U.user_id, U.item_id, U.behavior, C.parent_category_name as category_name
                 FROM user_behavior AS U LEFT JOIN category_dim FOR SYSTEM_TIME AS OF U.proctime AS C
-                ON U.category_id = C.sub_category_id;
+                ON U.category_id = C.sub_category_id
 
 
 pipes:

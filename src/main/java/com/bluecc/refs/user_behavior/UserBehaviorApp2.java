@@ -11,7 +11,12 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
 
 /**
- * $ just run sqlflow.UserBehaviorApp
+ * 统计每小时的成交量:
+ * 统计每小时的成交量就是每小时共有多少 "buy" 的用户行为。因此会需要用到 TUMBLE 窗口函数，
+ * 按照一小时切窗。然后每个窗口分别统计 "buy" 的个数，这可以通过先过滤出 "buy" 的数据，
+ * 然后 COUNT(*) 实现。
+ *
+ * $ just run sqlflow.UserBehaviorApp2
  */
 public class UserBehaviorApp2 {
     public static void main(String[] args) throws Exception {
