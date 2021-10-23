@@ -21,14 +21,8 @@ public class KafkaSource {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
 
-        Properties properties = new Properties();
-        properties.setProperty("bootstrap.servers", "localhost:9092");
-        properties.setProperty("group.id", "consumer-group");
-        properties.setProperty("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        properties.setProperty("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        properties.setProperty("auto.offset.reset", "latest");
+        Properties properties = getKafkaProperties();
 
-        // 从文件读取数据
         DataStream<String> dataStream = env.addSource(
                 new FlinkKafkaConsumer<String>(topic, new SimpleStringSchema(), properties));
 
@@ -36,5 +30,15 @@ public class KafkaSource {
         dataStream.print();
 
         env.execute();
+    }
+
+    public static Properties getKafkaProperties() {
+        Properties properties = new Properties();
+        properties.setProperty("bootstrap.servers", "localhost:9092");
+        properties.setProperty("group.id", "consumer-group");
+        properties.setProperty("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        properties.setProperty("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        properties.setProperty("auto.offset.reset", "latest");
+        return properties;
     }
 }
