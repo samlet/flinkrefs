@@ -1,45 +1,54 @@
-package com.bluecc.refs.broadcast;
+package com.bluecc.refs.rules;
 
-import lombok.extern.slf4j.Slf4j;
+import com.bluecc.refs.rules.beans.Person;
 import org.apache.flink.api.common.state.BroadcastState;
 import org.apache.flink.api.common.state.MapStateDescriptor;
-import org.apache.flink.api.common.state.ReadOnlyBroadcastState;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
-import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.BroadcastProcessFunction;
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
 import org.apache.flink.util.Collector;
+import org.jeasy.rules.api.Facts;
+import org.jeasy.rules.api.Rule;
+import org.jeasy.rules.api.Rules;
+import org.jeasy.rules.api.RulesEngine;
+import org.jeasy.rules.core.DefaultRulesEngine;
+import org.jeasy.rules.mvel.MVELRuleFactory;
+import org.jeasy.rules.support.reader.YamlRuleDefinitionReader;
 
+import java.io.FileReader;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Desc: 集合变量管广播的情况下 读取该集合的数据后就会 task 就会 finished
- */
-@Slf4j
-public class BroadcastAlertRule {
+public class BroadcastRules {
     final static MapStateDescriptor<String, String> ALERT_RULE = new MapStateDescriptor<>(
-            "alert_rule",
+            "alcohol_rule",
             BasicTypeInfo.STRING_TYPE_INFO,
             BasicTypeInfo.STRING_TYPE_INFO);
 
 
+    static RulesEngine rulesEngine = new DefaultRulesEngine();
+    static MVELRuleFactory ruleFactory = new MVELRuleFactory(new YamlRuleDefinitionReader());
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
-        List<String> strings = Arrays.asList("A", "B", "C");
 
-//        env.socketTextStream("127.0.0.1", 9200)
-//        env.fromElements("a", "b", "C")
+        List<String> strings = Arrays.asList("adult-rule.yml", "alcohol-rule.yml");
+
         env.addSource(
-                new RichSourceFunction<String>() {
+                new RichSourceFunction<Person>() {
 
                     private volatile boolean isRunning = true;
 
                     //测试数据集
-                    private String[] dataSet = new String[]{"a", "b", "C"};
+                    private Person[] dataSet = {
+                            new Person("Tom", 14),
+                            new Person("Kitty", 19),
+                            new Person("Samlet", 84)
+                    };
 
                     /**
                      * 模拟每3秒随机产生1条消息
@@ -47,7 +56,7 @@ public class BroadcastAlertRule {
                      * @throws Exception
                      */
                     @Override
-                    public void run(SourceContext<String> ctx) throws Exception {
+                    public void run(SourceContext<Person> ctx) throws Exception {
                         int size = dataSet.length;
                         while (isRunning) {
                             TimeUnit.SECONDS.sleep(3);
@@ -64,15 +73,27 @@ public class BroadcastAlertRule {
 
                 }).setParallelism(1)
                 .connect(env.fromCollection(strings).broadcast(ALERT_RULE))
-                .process(new BroadcastProcessFunction<String, String, String>() {
+                .process(new BroadcastProcessFunction<Person, String, String>() {
+                    Rules rules;
                     @Override
-                    public void processElement(String value, ReadOnlyContext ctx, Collector<String> out) throws Exception {
+                    public void open(Configuration parameters) throws Exception {
+                        super.open(parameters);
+                        rules = new Rules();
+                    }
+
+                    @Override
+                    public void processElement(Person value, ReadOnlyContext ctx, Collector<String> out) throws Exception {
 //                        log.info("-- process {}", value);
                         System.out.println("- element: "+value);
-                        ReadOnlyBroadcastState<String, String> broadcastState = ctx.getBroadcastState(ALERT_RULE);
-                        if (broadcastState.contains(value)) {
-                            out.collect(value);
-                        }
+//                        ReadOnlyBroadcastState<String, String> broadcastState = ctx.getBroadcastState(ALERT_RULE);
+//                        if (broadcastState.contains(value)) {
+//                            out.collect(value);
+//                        }
+                        System.out.println("total rules "+rules.size());
+                        Facts facts = new Facts();
+                        facts.put("person", value);
+                        rulesEngine.fire(rules, facts);
+                        System.out.println("person: "+value);
                     }
 
                     @Override
@@ -81,6 +102,8 @@ public class BroadcastAlertRule {
 //                        log.info("== put alert element {}", value);
                         System.out.println("broadcast: "+value);
                         broadcastState.put(value, value);
+                        Rule alcoholRule = ruleFactory.createRule(new FileReader("rules/"+value));
+                        rules.register(alcoholRule);
                     }
                 })
                 .print();
@@ -88,4 +111,3 @@ public class BroadcastAlertRule {
         env.execute();
     }
 }
-
