@@ -21,6 +21,8 @@ import org.apache.flink.streaming.connectors.redis.common.mapper.RedisCommand;
 import org.apache.flink.streaming.connectors.redis.common.mapper.RedisCommandDescription;
 import org.apache.flink.streaming.connectors.redis.common.mapper.RedisMapper;
 import org.apache.flink.util.Collector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Properties;
@@ -31,6 +33,7 @@ import java.util.Properties;
  * @author XINZE
  */
 public class TopProduct {
+    private static final Logger logger = LoggerFactory.getLogger(TopProduct.class);
 
     private static final int topSize = 5;
 
@@ -170,11 +173,12 @@ class TopNRedisSink implements RedisMapper<TopProductEntity> {
 
 
 class LogToEntity {
+    private static final Logger logger = LoggerFactory.getLogger(LogToEntity.class);
     public static LogEntity getLog(String s) {
-        System.out.println(s);
+        logger.info(s);
         String[] values = s.split(",");
         if (values.length < 2) {
-            System.out.println("Message is not correct");
+            logger.error("Message is not correct: {}", s);
             return null;
         }
         LogEntity log = new LogEntity();
