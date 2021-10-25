@@ -1,7 +1,10 @@
 package com.bluecc.refs.fastjson;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.beanutils.BeanUtils;
 import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class JsonObjectTest {
     @Test
@@ -9,6 +12,14 @@ public class JsonObjectTest {
         JSONObject jo=new JSONObject();
         jo.put("name", "samlet");
         jo.put("age", "33");
+        System.out.println(jo.toString());
+    }
+
+    @Test
+    public void testBeanSetter() throws InvocationTargetException, IllegalAccessException {
+        JSONObject jo=new JSONObject();
+        // 因为JSONObject实现了Map<String, Object>接口, 而setProperty可应用在map接口上
+        BeanUtils.setProperty(jo, "name", "samlet");
         System.out.println(jo.toString());
     }
 }

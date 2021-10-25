@@ -12,6 +12,15 @@ maxwell:
 	maxwell --user='maxwell' --password='XXXXXX' --host='127.0.0.1' --producer=stdout
 maxwell-kafka:
     maxwell --user='maxwell' --password='XXXXXX' --host='127.0.0.1' --producer=kafka --kafka.bootstrap.servers=localhost:9092 --kafka_topic=maxwell
+maxwell-gmall:
+    maxwell --user='maxwell' --password='XXXXXX' --host='127.0.0.1' --producer=kafka --kafka.bootstrap.servers=localhost:9092 --kafka_topic=ods_base_db_m
+
+# $ just maxwell-boot base_province
+maxwell-boot table:
+    maxwell-bootstrap --user='maxwell' --password='XXXXXX' --host='127.0.0.1' --database=gmall2020 --table={{table}}
+maxwell-ofbiz table:
+    maxwell-bootstrap --user='maxwell' --password='XXXXXX' --host='127.0.0.1' --database=ofbiz --table={{table}}
+
 cassandra:
     cassandra -f
 kafka:
@@ -55,7 +64,7 @@ socket:
     nc -lk 7777
 
 fraud:
-	mvn compile exec:java -Dexec.mainClass="com.bluecc.refs.FraudDetectionJob"
+	mvn compile exec:java -Dexec.mainClass="com.bluecc.refs.fraud.FraudDetectionJob"
 run program +FLAGS='':
     mvn compile exec:java -Dexec.mainClass="com.bluecc.refs.{{program}}" -Dexec.args="{{FLAGS}}"
 ft program +FLAGS='':
