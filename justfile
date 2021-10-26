@@ -7,7 +7,7 @@ tool:
 clickhouse:
     cd ~/workspace/olap/clickhouse && sudo ./clickhouse server
 clickhouse-cli:
-    cd ~/workspace/olap/clickhouse && ./clickhouse client -m
+    ~/workspace/olap/clickhouse/clickhouse client -m
 maxwell:
 	maxwell --user='maxwell' --password='XXXXXX' --host='127.0.0.1' --producer=stdout
 maxwell-kafka:
