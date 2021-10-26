@@ -1,0 +1,87 @@
+package com.bluecc.refs.ecommerce.beans;
+
+import lombok.Data;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.*;
+
+@Data
+public class Product implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    String productId;
+    String productTypeId;
+    String primaryProductCategoryId;
+    String facilityId;
+    LocalDateTime introductionDate;
+    LocalDateTime releaseDate;
+    LocalDateTime supportDiscontinuationDate;
+    LocalDateTime salesDiscontinuationDate;
+    String salesDiscWhenNotAvail;
+    String internalName;
+    String brandName;
+    String comments;
+    String productName;
+    String description;
+    String longDescription;
+    String priceDetailText;
+    String smallImageUrl;
+    String mediumImageUrl;
+    String largeImageUrl;
+    String detailImageUrl;
+    String originalImageUrl;
+    String detailScreen;
+    String inventoryMessage;
+    String inventoryItemTypeId;
+    String requireInventory;
+    String quantityUomId;
+    BigDecimal quantityIncluded;
+    BigDecimal piecesIncluded;
+    String requireAmount;
+    BigDecimal fixedAmount;
+    String amountUomTypeId;
+    String weightUomId;
+    BigDecimal shippingWeight;
+    BigDecimal productWeight;
+    String heightUomId;
+    BigDecimal productHeight;
+    BigDecimal shippingHeight;
+    String widthUomId;
+    BigDecimal productWidth;
+    BigDecimal shippingWidth;
+    String depthUomId;
+    BigDecimal productDepth;
+    BigDecimal shippingDepth;
+    String diameterUomId;
+    BigDecimal productDiameter;
+    BigDecimal productRating;
+    String ratingTypeEnum;
+    String returnable;
+    String taxable;
+    String chargeShipping;
+    String autoCreateKeywords;
+    String includeInPromotions;
+    String isVirtual;
+    String isVariant;
+    String virtualVariantMethodEnum;
+    String originGeoId;
+    String requirementMethodEnumId;
+    BigDecimal billOfMaterialLevel;
+    BigDecimal reservMaxPersons;
+    BigDecimal reserv2ndPPPerc;
+    BigDecimal reservNthPPPerc;
+    String configId;
+    LocalDateTime createdDate;
+    String createdByUserLogin;
+    LocalDateTime lastModifiedDate;
+    String lastModifiedByUserLogin;
+    String inShippingBox;
+    String defaultShipmentBoxTypeId;
+    String lotIdFilledIn;
+    String orderDecimalQuantity;
+    LocalDateTime lastUpdatedStamp;
+    LocalDateTime lastUpdatedTxStamp;
+    LocalDateTime createdStamp;
+    LocalDateTime createdTxStamp;
+    
+}

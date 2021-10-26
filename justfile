@@ -21,6 +21,11 @@ maxwell-boot table:
 maxwell-ofbiz table:
     maxwell-bootstrap --user='maxwell' --password='XXXXXX' --host='127.0.0.1' --database=ofbiz --table={{table}}
 
+# https://serverfault.com/questions/62411/how-can-i-sort-du-h-output-by-size
+# sort allows a -h parameter, which allows numeric suffixes of the kind produced by du -h
+kafka-data:
+    du -hs /usr/local/var/lib/kafka-logs/* | sort -h
+
 cassandra:
     cassandra -f
 kafka:

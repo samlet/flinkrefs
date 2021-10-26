@@ -24,6 +24,57 @@ import static com.bluecc.refs.source.Helper.GSON;
 import static com.google.gson.FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES;
 
 public class OrderInfoSource {
+
+    public static void main(String[] args) throws Exception {
+
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        env.setParallelism(1);
+
+        DataStream<String> inputStream = env.readTextFile("../bluesrv/maintain/dump/order_info.jsonl");
+        DataStream<OrderInfo> dataStream = inputStream
+                .map(line -> {
+
+                    OrderInfo orderInfo = GSON.fromJson(line, OrderInfo.class);
+                    // Long ts = DateTimeUtil.toTs(orderInfo.getCreateTime());
+                    DateTime dt = new DateTime(orderInfo.getCreateTime());
+                    orderInfo.setTs(dt.getMillis());
+                    return orderInfo;
+                })
+                .assignTimestampsAndWatermarks(
+                        WatermarkStrategy.<OrderInfo>forMonotonousTimestamps()
+                                .withTimestampAssigner(
+                                        (SerializableTimestampAssigner<OrderInfo>) (stats, recordTimestamp) -> stats.getTs()
+                                )
+                );
+
+        SingleOutputStreamOperator<UserAmount> reduceDS = dataStream.keyBy(stats -> stats.getUserId())
+                // .window(TumblingEventTimeWindows.of(Time.seconds(10)))
+                .window(TumblingEventTimeWindows.of(Time.minutes(10)))
+                .reduce((ReduceFunction<OrderInfo>) (value1, value2) -> {
+                    value1.setTotalAmount(value1.totalAmount.add(value2.totalAmount));
+                    return value1;
+                }, new ProcessWindowFunction<OrderInfo, UserAmount, Long, TimeWindow>() {
+
+                            @Override
+                            public void process(Long aLong, ProcessWindowFunction<OrderInfo, UserAmount, Long, TimeWindow>.Context context, Iterable<OrderInfo> elements, Collector<UserAmount> out) {
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                for (OrderInfo stat : elements) {
+                                    UserAmount result = new UserAmount();
+                                    result.setUserId(stat.getUserId());
+                                    result.setTotalAmount(stat.getTotalAmount());
+                                    result.setStart(simpleDateFormat.format(new Date(context.window().getStart())));
+                                    result.setEnd(simpleDateFormat.format(new Date(context.window().getEnd())));
+                                    result.setTs(new Date().getTime());
+                                    out.collect(result);
+                                }
+                            }
+                        }
+                );
+
+        reduceDS.print("amount");
+        env.execute();
+    }
+
     @Data
     public static class OrderInfo {
         private static final long serialVersionUID = 1L;
@@ -129,54 +180,5 @@ public class OrderInfoSource {
         private Long ts;
     }
 
-    public static void main(String[] args) throws Exception {
-
-        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.setParallelism(1);
-
-        DataStream<String> inputStream = env.readTextFile("../bluesrv/maintain/dump/order_info.jsonl");
-        DataStream<OrderInfo> dataStream = inputStream
-                .map(line -> {
-
-                    OrderInfo orderInfo = GSON.fromJson(line, OrderInfo.class);
-                    // Long ts = DateTimeUtil.toTs(orderInfo.getCreateTime());
-                    DateTime dt = new DateTime(orderInfo.getCreateTime());
-                    orderInfo.setTs(dt.getMillis());
-                    return orderInfo;
-                })
-                .assignTimestampsAndWatermarks(
-                        WatermarkStrategy.<OrderInfo>forMonotonousTimestamps()
-                                .withTimestampAssigner(
-                                        (SerializableTimestampAssigner<OrderInfo>) (stats, recordTimestamp) -> stats.getTs()
-                                )
-                );
-
-        SingleOutputStreamOperator<UserAmount> reduceDS = dataStream.keyBy(stats -> stats.getUserId())
-                // .window(TumblingEventTimeWindows.of(Time.seconds(10)))
-                .window(TumblingEventTimeWindows.of(Time.minutes(10)))
-                .reduce((ReduceFunction<OrderInfo>) (value1, value2) -> {
-                    value1.setTotalAmount(value1.totalAmount.add(value2.totalAmount));
-                    return value1;
-                }, new ProcessWindowFunction<OrderInfo, UserAmount, Long, TimeWindow>() {
-
-                            @Override
-                            public void process(Long aLong, ProcessWindowFunction<OrderInfo, UserAmount, Long, TimeWindow>.Context context, Iterable<OrderInfo> elements, Collector<UserAmount> out) {
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                for (OrderInfo stat : elements) {
-                                    UserAmount result = new UserAmount();
-                                    result.setUserId(stat.getUserId());
-                                    result.setTotalAmount(stat.getTotalAmount());
-                                    result.setStart(simpleDateFormat.format(new Date(context.window().getStart())));
-                                    result.setEnd(simpleDateFormat.format(new Date(context.window().getEnd())));
-                                    result.setTs(new Date().getTime());
-                                    out.collect(result);
-                                }
-                            }
-                        }
-                );
-
-        reduceDS.print("amount");
-        env.execute();
-    }
 }
 

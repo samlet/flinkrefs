@@ -1,0 +1,1 @@
+just run gen.SchemaGen -m ofbiz -b /Users/xiaofeiwu/jcloud/assets/langs/workspace/flink/ws/flinkrefs/src/main/java/com/bluecc/refs/ecommerce/beans
