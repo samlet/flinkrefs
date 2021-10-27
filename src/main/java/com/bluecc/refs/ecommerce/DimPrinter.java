@@ -1,14 +1,11 @@
 package com.bluecc.refs.ecommerce;
 
-import com.bluecc.fixtures.Modules;
 import com.bluecc.refs.ecommerce.beans.Product;
 import org.apache.flink.streaming.api.datastream.AsyncDataStream;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
-import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public class DimPrinter {
@@ -26,7 +23,7 @@ public class DimPrinter {
                 "DemoProduct-2",
                 "DemoProduct-3");
         SingleOutputStreamOperator<Product> productDS = AsyncDataStream.unorderedWait(
-                ds, new OfbizDim.ProductDim(), 60, TimeUnit.SECONDS
+                ds, new DimInjector.ProductDim(), 60, TimeUnit.SECONDS
         );
         productDS.print();
 

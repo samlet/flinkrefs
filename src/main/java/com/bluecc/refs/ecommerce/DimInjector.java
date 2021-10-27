@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutorService;
 
 import static java.lang.String.format;
 
-public class OfbizDim {
+public class DimInjector {
     @Slf4j
     static class ProductDim extends RichAsyncFunction<String, Product> {
         private static final long serialVersionUID = 1;
@@ -34,7 +34,7 @@ public class OfbizDim {
         @Override
         public void open(Configuration parameters) throws Exception {
             executorService = ThreadPoolUtil.getInstance();
-            this.fac = new OfbizFac();
+            fac = AppModule.getInstance(OfbizFac.class);
         }
 
         @Override
