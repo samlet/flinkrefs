@@ -3,6 +3,7 @@ package com.bluecc.refs.ecommerce.beans;
 import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.time.*;
 
 @Data
@@ -23,15 +24,15 @@ public class Person implements Serializable {
     String otherLocal;
     String memberId;
     String gender;
-    LocalDate birthDate;
-    LocalDate deceasedDate;
+    Date birthDate;
+    Date deceasedDate;
     Double height;
     Double weight;
     String mothersMaidenName;
     String maritalStatus;
     String socialSecurityNumber;
     String passportNumber;
-    LocalDate passportExpireDate;
+    Date passportExpireDate;
     Double totalYearsWorkExperience;
     String comments;
     String employmentStatusEnumId;
