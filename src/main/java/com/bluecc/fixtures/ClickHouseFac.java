@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import javax.inject.Singleton;
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -27,6 +28,10 @@ public class ClickHouseFac {
 
     public Connection getConnection() throws SQLException {
         return ds.getConnection();
+    }
+
+    public DataSource getDataSource(){
+        return ds;
     }
 }
 

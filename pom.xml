@@ -37,7 +37,7 @@ under the License.
 		<maven.compiler.target>${target.java.version}</maven.compiler.target>
 		<log4j.version>2.14.1</log4j.version>
 		<hbase.version>2.4.5</hbase.version>
-		<clickhouse-native-jdbc.version>2.5.6</clickhouse-native-jdbc.version>
+		<clickhouse-native-jdbc.version>2.6.0</clickhouse-native-jdbc.version>
 	</properties>
 
 	<repositories>
@@ -366,6 +366,11 @@ under the License.
 		</dependency>
 
 		<dependency>
+			<groupId>org.jdbi</groupId>
+			<artifactId>jdbi3-core</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
 			<version>3.17.2</version>
@@ -377,8 +382,20 @@ under the License.
 			<version>5.7.0</version>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
 
+
+	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jdbi</groupId>
+				<artifactId>jdbi3-bom</artifactId>
+				<type>pom</type>
+				<version>3.24.1</version>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<build>
 		<plugins>
 

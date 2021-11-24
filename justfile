@@ -46,6 +46,11 @@ restart-flink:
     ~/workspace/flink/flink-1.13.2/bin/start-cluster.sh
     ~/workspace/flink/flink-1.13.2/bin/sql-client.sh
 
+jaeger:
+    ~/workspace/tracing/jaeger-1.28.0-darwin-amd64/jaeger-all-in-one
+jaeger-ui:
+    open http://localhost:16686
+
 topics:
     kafka-topics --list --bootstrap-server localhost:9092
 desc topic:
