@@ -195,15 +195,20 @@ public class JdbiProcs {
             List<String> seasons = handle.createQuery("select seasons from player_stats where name=:name")
                     .bind("name", "Jack Johnson")
                     .map((rs, ctx) -> {
-                        Array sqlArray=rs.getArray("seasons");
-                        List<String> result=Lists.newArrayList();
-                        for(Object o:(Object[])sqlArray.getArray()){
-                            result.add(o.toString());
-                        }
-                        return result;
+                        return getStrings(rs, "seasons");
                     }).first();
             System.out.println(seasons);
             return null;
         });
     }
+
+    private static List<String> getStrings(ResultSet rs, String col) throws SQLException {
+        Array sqlArray= rs.getArray(col);
+        List<String> result=Lists.newArrayList();
+        for(Object o:(Object[])sqlArray.getArray()){
+            result.add(o.toString());
+        }
+        return result;
+    }
 }
+
